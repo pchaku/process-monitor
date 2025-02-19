@@ -5,17 +5,19 @@
 
 #include <vector>
 
-void WindowsApplicationScanner::ListenForApplications(Napi::Env &env, Napi::ThreadSafeFunction &&callback) {
+void WindowsApplicationScanner::ListenForApplications(Napi::Env &env, Napi::ThreadSafeFunction &&callback)
+{
   PlatformNativeApplicationScanner::ListenForApplications(env, std::move(callback));
   // call run scan on startup to avoid race condition with hook thread usage
   runScan();
   StartHookThread();
 }
 
-void WindowsApplicationScanner::StopListener() {
-	StopHookThread();
+void WindowsApplicationScanner::StopListener()
+{
+  StopHookThread();
   _windows = {};
-	PlatformNativeApplicationScanner::StopListener();
+  PlatformNativeApplicationScanner::StopListener();
 }
 
 /*
@@ -25,9 +27,8 @@ void WindowsApplicationScanner::StopListener() {
 void WindowsApplicationScanner::setupHooks()
 {
   _windows_callback_hook = SetWinEventHook(
-    EVENT_OBJECT_CREATE, EVENT_OBJECT_DESTROY, NULL, &EnqueueWindowEvent,
-    0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS
-  );
+      EVENT_OBJECT_CREATE, EVENT_OBJECT_DESTROY, NULL, &EnqueueWindowEvent,
+      0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
 };
 
 void WindowsApplicationScanner::teardownHooks()
@@ -40,14 +41,14 @@ void WindowsApplicationScanner::teardownHooks()
 }
 
 void WindowsApplicationScanner::EnqueueWindowEvent(
-  HWINEVENTHOOK hWinEventHook,
-  DWORD event,
-  HWND hwnd,
-  LONG idObject,
-  LONG idChild,
-  DWORD idEventThread,
-  DWORD dwmsEventTime
-) {
+    HWINEVENTHOOK hWinEventHook,
+    DWORD event,
+    HWND hwnd,
+    LONG idObject,
+    LONG idChild,
+    DWORD idEventThread,
+    DWORD dwmsEventTime)
+{
   auto &scanner = WindowsApplicationScanner::instance();
   if (IsSelfOwnedWindow(hwnd, idObject, idChild))
   {
@@ -71,7 +72,8 @@ void WindowsApplicationScanner::runScan()
 {
   WindowMap windows = {};
   EnumDesktopWindows(NULL, enumWindowCallback, (LPARAM)&windows);
-  if (windows == _windows) {
+  if (windows == _windows)
+  {
     return;
   }
   _windows = windows;
@@ -84,22 +86,21 @@ void WindowsApplicationScanner::runScan()
   }
   // todo: maybe raise this up to platform level
   _callback.BlockingCall(
-    [ctx = std::move(context)](Napi::Env env, Napi::Function jsCallback)
-    {
-      auto windows_out = Napi::Array::New(env, ctx.size());
-      auto title_prop = Napi::String::New(env, "windowTitle");
-      auto proc_path_prop = Napi::String::New(env, "procedurePath");
-      auto proc_prop = Napi::String::New(env, "procedureName");
-      int i = 0;
-      for (const auto &info : ctx)
+      [ctx = std::move(context)](Napi::Env env, Napi::Function jsCallback)
       {
-        Napi::Object obj = Napi::Object::New(env);
-        obj.Set(title_prop, info.window_title);
-        obj.Set(proc_path_prop, info.procedure_path);
-        obj.Set(proc_prop, info.procedure_name);
-        windows_out.Set(i++, obj);
-      }
-      jsCallback.Call({windows_out});
-    }
-  );
+        auto windows_out = Napi::Array::New(env, ctx.size());
+        auto title_prop = Napi::String::New(env, "windowTitle");
+        auto proc_path_prop = Napi::String::New(env, "procedurePath");
+        auto proc_prop = Napi::String::New(env, "procedureName");
+        int i = 0;
+        for (const auto &info : ctx)
+        {
+          Napi::Object obj = Napi::Object::New(env);
+          obj.Set(title_prop, info.window_title);
+          obj.Set(proc_path_prop, info.procedure_path);
+          obj.Set(proc_prop, info.procedure_name);
+          windows_out.Set(i++, obj);
+        }
+        jsCallback.Call({windows_out});
+      });
 }

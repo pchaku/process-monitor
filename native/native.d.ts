@@ -2,6 +2,7 @@
 ////
 
 // Application Scanner
+// This exposes the NativeApplicationScanner to JS/TS and tells it what type of data to expect
 
 declare interface ScannedApplication {
   windowTitle: string;

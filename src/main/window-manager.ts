@@ -7,7 +7,7 @@ const NativeApplicationScanner = LoadNativeModule("NativeApplicationScanner");
 export class WindowManager {
   private window: BrowserWindow;
   private readonly windowSize = { width: 720, height: 420 };
-  private applicationScannerIsRunning: boolean = false;
+  private applicationScannerIsRunning = false;
   constructor(
     preloadEntry: string,
     staticEntry: string,

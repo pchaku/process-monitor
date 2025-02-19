@@ -3,13 +3,14 @@
 
 #include "application-scanner.hpp"
 
-class MacApplicationScanner: PlatformNativeApplicationScanner {
-public: 
+class MacApplicationScanner : PlatformNativeApplicationScanner
+{
+public:
   MacApplicationScanner() {}
+  static MacApplicationScanner &instance();
   static void temp();
   void ListenForApplications(Napi::Env &env, Napi::ThreadSafeFunction &&callback) final;
   void StopListener() final;
 };
-
 
 #endif // MAC_APPLICATION_SCANNER_HPP

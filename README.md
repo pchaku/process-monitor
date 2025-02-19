@@ -1,6 +1,6 @@
 # Application Monitor
 
-This repo makes use of electron-forge, vite, typecript, vue, and native modules to create a basic process monitor. Hopefully, with your help, we can make it do some more things!
+This repo makes use of electron-forge, vite, typescript, vue, and native modules to create a basic process monitor. Hopefully, with your help, we can make it do some more things!
 
 ** NOTE: THIS APP ONLY RUNS ON WINDOWS ATM **
 
@@ -23,16 +23,15 @@ You can bundle the application for distribution with `npm run make`. Ensure that
 
 .
 ├── native - native node modules written in C++
-│   ├── native.d.ts - typings for native modules for use with typescript
-│   └── lib
-│       ├── application-scanner - a native module that scans running applications with an active window
-│       └── utilities - reusable components / functions
+│ ├── native.d.ts - typings for native modules for use with typescript
+│ └── lib
+│ ├── application-scanner - a native module that scans running applications with an active window
+│ └── utilities - reusable components / functions
 ├── src
-│   ├── main - code that will run in the main thread
-│   ├── render - code that will run in the render (chromium) thread
-│   ├── main.ts - application entrypoint
-│   └── types.ts - constants common between main / render
+│ ├── main - code that will run in the main thread
+│ ├── render - code that will run in the render (chromium) thread
+│ ├── main.ts - application entrypoint
+│ └── types.ts - constants common between main / render
 ├── binding.gyp - build system config for native modules
 ├── forge.config.ts - electron-forge configuration
 └── vite.[main / preload / renderer].config.ts - specific vite configs for the different targets
-# process-monitor

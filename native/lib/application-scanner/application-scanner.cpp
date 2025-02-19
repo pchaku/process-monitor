@@ -2,28 +2,31 @@
 #include "application-scanner.hpp"
 
 #if defined(_WIN32)
-  #include "application-scanner.windows.hpp"
+#include "application-scanner.windows.hpp"
 #elif __APPLE__
-    #include <TargetConditionals.h>
-    #ifdef TARGET_OS_MAC
-      #include "application-scanner.mac.hpp"
-    #endif
+#include <TargetConditionals.h>
+#ifdef TARGET_OS_MAC
+#include "application-scanner.mac.hpp"
+#endif
 #endif
 
+#include <iostream>
 
-NativeApplicationScanner::NativeApplicationScanner(Napi::Env env, Napi::Object exports) {
+NativeApplicationScanner::NativeApplicationScanner(Napi::Env env, Napi::Object exports)
+{
   /* Advertise to node the functions this module supports */
   DefineAddon(
-    exports,
-    {
-      InstanceMethod("ListenForApplications", &NativeApplicationScanner::ListenForApplications, napi_enumerable),
-      InstanceMethod("StopListener", &NativeApplicationScanner::StopListener, napi_enumerable),
-    }
-  );
+      exports,
+      {
+          InstanceMethod("ListenForApplications", &NativeApplicationScanner::ListenForApplications, napi_enumerable),
+          InstanceMethod("StopListener", &NativeApplicationScanner::StopListener, napi_enumerable),
+      });
 }
 
-void NativeApplicationScanner::ListenForApplications(const Napi::CallbackInfo& info) {
-  
+void NativeApplicationScanner::ListenForApplications(const Napi::CallbackInfo &info)
+{
+  std::cout << "C++ version: " << __cplusplus << std::endl;
+
   /*
    * Parse the inputs; we don't really ensure concrete types, just the type shape
    *  throw if anything looks wrong
@@ -58,8 +61,8 @@ void NativeApplicationScanner::ListenForApplications(const Napi::CallbackInfo& i
 #if defined(_WIN32)
   WindowsApplicationScanner::instance().ListenForApplications(env, std::move(threadsafe_callback_fn));
 #elif defined(TARGET_OS_MAC)
-  MacApplicationScanner::temp();
-  // MacApplicationScanner::instance().ListenForApplications(env, std::move(threadsafe_callback_fn));
+  // MacApplicationScanner::temp();
+  MacApplicationScanner::instance().ListenForApplications(env, std::move(threadsafe_callback_fn));
 #else
   Napi::TypeError::New(env, "No PlatformNativeApplicationScanner available for this platform")
       .ThrowAsJavaScriptException();
@@ -69,20 +72,21 @@ void NativeApplicationScanner::ListenForApplications(const Napi::CallbackInfo& i
   consoleLog.Call({Napi::String::New(env, "Successfully started NativeApplicationScanner")});
 }
 
-void NativeApplicationScanner::StopListener(const Napi::CallbackInfo& info) {
+void NativeApplicationScanner::StopListener(const Napi::CallbackInfo &info)
+{
 
   auto env = info.Env();
 
-/*
- * Invoke platform specific application scanner; don't throw even if ones not available as the function
- *  would be idempotent
- */
+  /*
+   * Invoke platform specific application scanner; don't throw even if ones not available as the function
+   *  would be idempotent
+   */
 
 #if defined(_WIN32)
   WindowsApplicationScanner::instance().StopListener();
 #elif defined(TARGET_OS_MAC)
-  MacApplicationScanner::temp();
-  // MacApplicationScanner::instance().StopListener();
+  // MacApplicationScanner::temp();
+  MacApplicationScanner::instance().StopListener();
 #endif
 
   Napi::Function consoleLog = env.Global().Get("console").As<Napi::Object>().Get("log").As<Napi::Function>();
