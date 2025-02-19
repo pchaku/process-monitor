@@ -67,6 +67,39 @@
           }
         ]
       ]
+    },
+    {
+      "target_name": "NativeApplicationStatus",
+      "dependencies": [
+        "settings"
+      ],
+      "sources": [
+        "native/lib/application-scanner/application-status.cpp"
+      ],
+      "conditions": [
+        [
+          "OS==\"win\"",
+          {
+            "sources+": [
+              "native/lib/utilities/helpers.windows.cpp",
+              "native/lib/application-scanner/application-scanner.windows.cpp"
+            ],
+            "link_settings": {
+              "libraries+": [
+                "dwmapi.lib",
+              ]
+            }
+          }
+        ],
+        [
+          "OS==\"mac\"",
+          {
+            "sources+": [
+              "native/lib/application-scanner/application-scanner.mac.cpp"
+            ]
+          }
+        ]
+      ]
     }
   ]
 }

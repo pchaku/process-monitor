@@ -2,7 +2,16 @@ import { BrowserWindow, globalShortcut, ipcMain } from "electron";
 import { ApplicationScannerChannel, RenderMessage, RenderRequestChannel } from "../types";
 import { LoadNativeModule } from "./utils";
 
+// loads the NativeApplicationScanner module - the link between the back and front end
 const NativeApplicationScanner = LoadNativeModule("NativeApplicationScanner");
+const NativeApplicationStatus = LoadNativeModule("NativeApplicationStatus");
+
+NativeApplicationStatus.ListenForStatus(
+  { applicationName: "Finder", windowTitle: "Recents" },
+  (result) => {
+    console.log("Status Update", result);
+  }
+);
 
 export class WindowManager {
   private window: BrowserWindow;

@@ -3,6 +3,13 @@
 
 #include "application-scanner.hpp"
 
+struct ScannedApp
+{
+  std::string procedureName;
+  std::string windowTitle;
+  std::string procedurePath;
+};
+
 class MacApplicationScanner : PlatformNativeApplicationScanner
 {
 public:

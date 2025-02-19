@@ -20,10 +20,27 @@ declare interface NativeApplicationScannerModule {
 
 ////
 
+//Application Status
+declare interface ApplicationStatusCallbackResult {
+  status: 'open' | 'hidden' | 'closed';
+  dimensions?: { x: number; y: number; width: number; height: number };
+}
+
+declare type ApplicationStatusCallback = (result: ApplicationStatusCallbackResult) => void;
+
+declare interface NativeApplicationStatusModule {
+  ListenForStatus: (
+    options: { applicationName: string; windowTitle: string },
+    callback: ApplicationStatusCallback
+  ) => void;
+  StopListening: () => void;
+}
+
 // Native Modules
 
 declare type NativeModuleMap = {
   "NativeApplicationScanner": NativeApplicationScannerModule,
+  "NativeApplicationStatus": NativeApplicationStatusModule,
 };
 
 declare type NativeModuleTypes = keyof NativeModuleMap;
