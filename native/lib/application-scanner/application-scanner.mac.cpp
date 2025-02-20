@@ -67,7 +67,7 @@ void MacApplicationScanner::ListenForApplications(Napi::Env &env, Napi::ThreadSa
 
         callback.NonBlockingCall([applications](Napi::Env env, Napi::Function jsCallback) {
           Napi::Array result = Napi::Array::New(env, applications.size());
-          for (int i = 0; i < applications.size(); ++i)
+          for (size_t i = 0; i < applications.size(); ++i)
           {
               Napi::Object appObject = Napi::Object::New(env);
               appObject.Set("procedureName", applications[i].procedureName);

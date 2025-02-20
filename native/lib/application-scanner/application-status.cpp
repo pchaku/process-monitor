@@ -22,7 +22,7 @@ WindowInfo GetWindowInfo(const std::string &applicationName, const std::string &
     CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly | kCGWindowListOptionIncludingWindow, kCGNullWindowID);
     CFIndex windowCount = CFArrayGetCount(windowList);
 
-    std::cout << "Looking for Application: " << applicationName << ", Window Title: " << windowTitle << std::endl;
+    // std::cout << "Looking for Application: " << applicationName << ", Window Title: " << windowTitle << std::endl;
 
     for (CFIndex i = 0; i < windowCount; ++i)
     {
@@ -47,7 +47,6 @@ WindowInfo GetWindowInfo(const std::string &applicationName, const std::string &
             {
                 windowNameStr = windowNameBuffer;
             }
-            std::cout << "Window Title: " << windowNameStr << std::endl;
         }
         // else
         // {
@@ -73,8 +72,8 @@ WindowInfo GetWindowInfo(const std::string &applicationName, const std::string &
                     info.width = bounds.size.width;
                     info.height = bounds.size.height;
 
-                    std::cout << "Bounds: x=" << info.x << ", y=" << info.y
-                              << ", width=" << info.width << ", height=" << info.height << std::endl;
+                    // std::cout << "Bounds: x=" << info.x << ", y=" << info.y
+                    //           << ", width=" << info.width << ", height=" << info.height << std::endl;
                 }
 
                 AXUIElementRef appElement = AXUIElementCreateApplication(pid);

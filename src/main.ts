@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { join } from 'node:path';
 import started from 'electron-squirrel-startup';
 import { WindowManager } from './main/window-manager';
+import { ApplicationStatus } from './main/ApplicationStatus';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -64,3 +65,21 @@ app.on('activate', () => {
   }
 });
 
+app.whenReady().then(() => {
+  console.log('Electron App Started');
+
+  const appStatus = ApplicationStatus.getInstance();
+
+  appStatus.ListenForStatus(
+    { applicationName: 'Finder', windowTitle: 'Recents' },
+    (result) => {
+      console.log('Status Update:', result);
+    }
+  );
+
+  // Optional: Stop listening after 15s
+  setTimeout(() => {
+    appStatus.StopListening();
+    console.log('Stopped Listening');
+  }, 15000);
+});
