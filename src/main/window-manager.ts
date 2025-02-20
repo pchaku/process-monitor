@@ -1,6 +1,7 @@
 import { BrowserWindow, globalShortcut, ipcMain } from "electron";
-import { ApplicationScannerChannel, RenderMessage, RenderRequestChannel } from "../types";
+import { ApplicationScannerChannel, ApplicationStatusChannel, RenderMessage, RenderRequestChannel } from "../types";
 import { LoadNativeModule } from "./utils";
+import { ApplicationStatus } from "./ApplicationStatus";
 
 // loads the NativeApplicationScanner module - the link between the back and front end
 const NativeApplicationScanner = LoadNativeModule("NativeApplicationScanner");
@@ -76,6 +77,20 @@ export class WindowManager {
           NativeApplicationScanner.StopListener();
           this.applicationScannerIsRunning = false;
           break;
+        case "ApplicationStatus:StartListening": {
+          const { applicationName, windowTitle } = message.data;
+          ApplicationStatus.getInstance().ListenForStatus(
+            { applicationName, windowTitle },
+            (statusUpdate) => {
+              this.window.webContents.send(ApplicationStatusChannel, statusUpdate);
+            }
+          );
+          break;
+        }
+        case "ApplicationStatus:StopListening": {
+          ApplicationStatus.getInstance().StopListening();
+          break;
+        } 
         default:
           throw new Error(
             `Main thread received unhandled request type on ipc channel ${RenderRequestChannel}: ${message.request}`

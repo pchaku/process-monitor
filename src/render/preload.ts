@@ -1,6 +1,6 @@
 
 import {
-  ApplicationScannerChannel, RenderMessage, RenderRequestChannel
+  ApplicationScannerChannel, ApplicationStatusChannel, RenderMessage, RenderRequestChannel
 } from "../types";
 import { contextBridge, ipcRenderer } from "electron";
 
@@ -15,6 +15,21 @@ export const ApplicationMonitorApi = {
       request: "ApplicationScanner:StartListener"
     };
     ipcRenderer.send(RenderRequestChannel, message);
+  },
+
+  StartApplicationStatus: (applicationName: string, windowTitle: string, callback: WindowStatuses) => {
+    ipcRenderer.on(ApplicationStatusChannel, (_, statusUpdate: WindowStatus) => {
+        callback(statusUpdate);
+    });
+
+    ipcRenderer.send(RenderRequestChannel, {
+      request: 'ApplicationStatus:StartListening',
+      data: { applicationName, windowTitle }
+    });
+  },
+
+  StopApplicationStatus: () => {
+    ipcRenderer.send(RenderRequestChannel, { request: 'ApplicationStatus:StopListening' });
   }
 }
 

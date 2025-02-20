@@ -1,5 +1,20 @@
 <template>
     <h1>Application Monitor</h1>
+    <!-- <h3>Window Status of Finder: Recents</h3>
+    <p>
+      Status: {{ windowStatus.status }}
+      <br>
+      Dimensions: 
+      <br>
+      x: {{ windowStatus.dimensions.x }}
+      <br>
+      y: {{ windowStatus.dimensions.y }}
+      <br>
+      height: {{ windowStatus.dimensions.height }}
+      <br>
+      width: {{ windowStatus.dimensions.width }}
+      <br>
+    </p> -->
     <p>
       <template v-if="!hasReceivedApplications">
         Waiting for application scanner to return results
@@ -28,11 +43,17 @@ const scannedApplications = ref<ScannedApplications>([]);
 const hasScannedApplications = computed(() => {
   return scannedApplications.value.length > 0;
 });
+const windowStatus = ref<WindowStatus>();
+
 onMounted(() => {
   window.ApplicationMonitorApi.StartApplicationScanner((newScannedApplications) => {
     hasReceivedApplications.value = true;
     scannedApplications.value = newScannedApplications;
   });
+
+  window.ApplicationMonitorApi.StartApplicationStatus('Finder', 'Recents', (newWindowStatus) => {
+      windowStatus.value = newWindowStatus;
+    });
 });
 </script>
 

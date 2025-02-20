@@ -1,4 +1,5 @@
 
+import { NativeModuleMap, NativeModuleTypes } from "../../native/native";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 

@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import { join } from 'node:path';
 import started from 'electron-squirrel-startup';
 import { WindowManager } from './main/window-manager';
-import { ApplicationStatus } from './main/ApplicationStatus';
+// import { ApplicationStatus } from './main/ApplicationStatus';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -26,7 +26,7 @@ const createWindow = () => {
   //         │   └── index.[js, css] (render, bundle)
   //         └── index.html (static root)
 
-  // the folowing locations are relative to the location of main.js
+  // the following locations are relative to the location of main.js
 
   const preloadEntry = join(
     __dirname,
@@ -65,21 +65,21 @@ app.on('activate', () => {
   }
 });
 
-app.whenReady().then(() => {
-  console.log('Electron App Started');
+// app.whenReady().then(() => {
+//   console.log('Electron App Started');
 
-  const appStatus = ApplicationStatus.getInstance();
+//   const appStatus = ApplicationStatus.getInstance();
 
-  appStatus.ListenForStatus(
-    { applicationName: 'Finder', windowTitle: 'Recents' },
-    (result) => {
-      console.log('Status Update:', result);
-    }
-  );
+//   appStatus.ListenForStatus(
+//     { applicationName: 'Finder', windowTitle: 'Recents' },
+//     (result) => {
+//       console.log('Status Update:', result);
+//     }
+//   );
 
-  // Optional: Stop listening after 15s
-  setTimeout(() => {
-    appStatus.StopListening();
-    console.log('Stopped Listening');
-  }, 15000);
-});
+//   // Optional: Stop listening after 15s
+//   setTimeout(() => {
+//     appStatus.StopListening();
+//     console.log('Stopped Listening');
+//   }, 15000);
+// });
